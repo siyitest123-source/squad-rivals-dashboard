@@ -10,17 +10,20 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #0a0e1a;
-    --bg-2: #111827;
-    --surface: #161d2e;
-    --surface-2: #1d2538;
-    --border: #2a324a;
-    --accent: #ff3366;
-    --accent-2: #ffb800;
-    --accent-3: #00d4aa;
-    --text: #e8ecf5;
-    --text-dim: #8b94aa;
-    --text-faint: #5a6478;
+    --bg: #fafaf7;
+    --bg-2: #f3f2ec;
+    --surface: #ffffff;
+    --surface-2: #f7f6f1;
+    --border: #e5e3da;
+    --border-strong: #d4d1c4;
+    --accent: #d63862;
+    --accent-2: #c9881a;
+    --accent-3: #1f8a6e;
+    --accent-4: #5b4ad4;
+    --accent-5: #2563cc;
+    --text: #1a1a1a;
+    --text-dim: #5a5a52;
+    --text-faint: #8a8a80;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -36,8 +39,8 @@
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255, 51, 102, 0.08), transparent),
-      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(0, 212, 170, 0.06), transparent);
+      radial-gradient(ellipse 80% 50% at 20% 0%, rgba(214, 56, 98, 0.04), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(31, 138, 110, 0.04), transparent);
     pointer-events: none;
     z-index: 0;
   }
@@ -86,8 +89,9 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding: 6px 10px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
     border-radius: 4px;
+    background: var(--surface);
   }
 
   /* KPI strip */
@@ -120,6 +124,7 @@
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1;
+    color: var(--text);
   }
   .kpi-sub {
     font-size: 12px;
@@ -205,12 +210,12 @@
   }
   input[type="range"]::-webkit-slider-runnable-track {
     height: 3px;
-    background: var(--border);
+    background: var(--border-strong);
     border-radius: 2px;
   }
   input[type="range"]::-moz-range-track {
     height: 3px;
-    background: var(--border);
+    background: var(--border-strong);
     border-radius: 2px;
   }
   input[type="range"]::-webkit-slider-thumb {
@@ -220,7 +225,7 @@
     background: var(--accent-2);
     border-radius: 50%;
     margin-top: -6.5px;
-    border: 2px solid var(--bg);
+    border: 2px solid var(--surface);
     box-shadow: 0 0 0 1px var(--accent-2);
     transition: transform 0.15s;
   }
@@ -230,7 +235,7 @@
     height: 16px;
     background: var(--accent-2);
     border-radius: 50%;
-    border: 2px solid var(--bg);
+    border: 2px solid var(--surface);
     box-shadow: 0 0 0 1px var(--accent-2);
   }
 
@@ -293,7 +298,7 @@
   }
   .total-row td {
     padding-top: 18px !important;
-    border-top: 2px solid var(--border);
+    border-top: 2px solid var(--border-strong);
     font-weight: 700 !important;
     font-size: 15px;
   }
@@ -306,17 +311,19 @@
     border-radius: 4px;
     overflow: hidden;
     margin: 12px 0;
+    border: 1px solid var(--border);
   }
   .allocation-seg {
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     font-family: 'JetBrains Mono', monospace;
-    color: var(--bg);
+    color: #ffffff;
     transition: opacity 0.2s;
     cursor: default;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
   }
   .allocation-seg:hover { opacity: 0.85; }
   .allocation-legend {
@@ -355,7 +362,7 @@
     font-family: 'JetBrains Mono', monospace;
     margin: 28px 0 14px;
     padding-bottom: 8px;
-    border-bottom: 1px dashed var(--border);
+    border-bottom: 1px dashed var(--border-strong);
   }
   .control-section:first-child { margin-top: 0; }
 
@@ -365,7 +372,7 @@
     margin-top: 20px;
     padding: 10px;
     background: transparent;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
     color: var(--text-dim);
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -378,6 +385,7 @@
   .reset-btn:hover {
     border-color: var(--accent);
     color: var(--accent);
+    background: var(--surface-2);
   }
 
   /* Footer note */
@@ -385,7 +393,8 @@
     margin-top: 32px;
     padding: 16px 20px;
     background: var(--surface);
-    border-left: 2px solid var(--accent-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-2);
     border-radius: 0 6px 6px 0;
     font-size: 12px;
     color: var(--text-dim);
@@ -401,6 +410,7 @@
     background: var(--bg-2);
     padding: 4px;
     border-radius: 6px;
+    border: 1px solid var(--border);
   }
   .scenario-btn {
     flex: 1;
@@ -415,10 +425,12 @@
     cursor: pointer;
     border-radius: 4px;
     transition: all 0.15s;
+    font-weight: 500;
   }
   .scenario-btn.active {
-    background: var(--surface-2);
+    background: var(--surface);
     color: var(--accent-2);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   }
   .scenario-btn:hover:not(.active) { color: var(--text); }
 </style>
@@ -427,7 +439,7 @@
 <div class="container">
   <header>
     <div>
-      <div class="brand">Socios Squad Rivals · Revenue Model v0.1</div>
+      <div class="brand">Socios Squad Rivals · Revenue Model v0.2</div>
       <h1>Economy <span class="em">Sandbox</span></h1>
       <p class="subtitle">Adjust pricing, conversion rates, and CHZ price. Watch the model recompute in real time. All figures in USD unless marked CHZ.</p>
     </div>
@@ -466,8 +478,8 @@
         <h2>Inputs</h2>
 
         <div class="scenarios">
-          <button class="scenario-btn active" data-scenario="base">Base</button>
           <button class="scenario-btn" data-scenario="bear">Bear</button>
+          <button class="scenario-btn active" data-scenario="base">Base</button>
           <button class="scenario-btn" data-scenario="bull">Bull</button>
         </div>
 
@@ -476,10 +488,10 @@
         <div class="control">
           <div class="control-header">
             <span class="control-label">Weekly Active Users</span>
-            <span class="control-value" id="val-wau">50,000</span>
+            <span class="control-value" id="val-wau">1,000</span>
           </div>
-          <input type="range" id="wau" min="5000" max="500000" step="5000" value="50000">
-          <div class="control-hint">Steady state post-launch</div>
+          <input type="range" id="wau" min="100" max="100000" step="100" value="1000">
+          <div class="control-hint">Early-stage range: 100 – 100,000</div>
         </div>
 
         <div class="control">
@@ -496,36 +508,36 @@
         <div class="control">
           <div class="control-header">
             <span class="control-label">Activate ≥1 Slot</span>
-            <span class="control-value" id="val-activation-rate">40%</span>
+            <span class="control-value" id="val-activation-rate">30%</span>
           </div>
-          <input type="range" id="activation-rate" min="5" max="80" step="1" value="40">
+          <input type="range" id="activation-rate" min="5" max="80" step="1" value="30">
           <div class="control-hint">% of WAU who activate Fan Token slots</div>
         </div>
 
         <div class="control">
           <div class="control-header">
             <span class="control-label">Avg Slots Activated</span>
-            <span class="control-value" id="val-slots">3.0</span>
+            <span class="control-value" id="val-slots">2.5</span>
           </div>
-          <input type="range" id="avg-slots" min="1" max="5" step="0.1" value="3.0">
+          <input type="range" id="avg-slots" min="1" max="5" step="0.1" value="2.5">
           <div class="control-hint">Per activating user</div>
         </div>
 
         <div class="control">
           <div class="control-header">
             <span class="control-label">Buy Tickets/Scouts</span>
-            <span class="control-value" id="val-flex-rate">15%</span>
+            <span class="control-value" id="val-flex-rate">10%</span>
           </div>
-          <input type="range" id="flex-rate" min="2" max="50" step="1" value="15">
+          <input type="range" id="flex-rate" min="2" max="50" step="1" value="10">
           <div class="control-hint">% of WAU buying flex purchases</div>
         </div>
 
         <div class="control">
           <div class="control-header">
             <span class="control-label">Assistant Mgr Subs</span>
-            <span class="control-value" id="val-am-rate">3%</span>
+            <span class="control-value" id="val-am-rate">2%</span>
           </div>
-          <input type="range" id="am-rate" min="0" max="15" step="0.5" value="3">
+          <input type="range" id="am-rate" min="0" max="15" step="0.5" value="2">
           <div class="control-hint">% of WAU subscribed to AM</div>
         </div>
 
@@ -619,21 +631,21 @@
 <script>
   // ============ STATE ============
   const defaults = {
-    wau: 50000,
+    wau: 1000,
     chzPrice: 0.05,
-    activationRate: 40,
-    avgSlots: 3.0,
-    flexRate: 15,
-    amRate: 3,
+    activationRate: 30,
+    avgSlots: 2.5,
+    flexRate: 10,
+    amRate: 2,
     priceActivation: 20,
     priceTicket: 10,
     priceAM: 80,
   };
 
   const scenarios = {
+    bear: { ...defaults, wau: 200, chzPrice: 0.03, activationRate: 20, avgSlots: 1.8, flexRate: 6, amRate: 1 },
     base: { ...defaults },
-    bear: { ...defaults, wau: 15000, chzPrice: 0.03, activationRate: 25, avgSlots: 2.0, flexRate: 8, amRate: 1.5 },
-    bull: { ...defaults, wau: 200000, chzPrice: 0.12, activationRate: 55, avgSlots: 3.8, flexRate: 22, amRate: 5 },
+    bull: { ...defaults, wau: 5000, chzPrice: 0.08, activationRate: 40, avgSlots: 3.2, flexRate: 15, amRate: 3.5 },
   };
 
   let state = { ...defaults };
@@ -644,7 +656,10 @@
     if (n >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
     return '$' + n.toFixed(0);
   };
-  const fmtUSDFull = (n) => '$' + Math.round(n).toLocaleString();
+  const fmtUSDFull = (n) => {
+    if (n < 1) return '$' + n.toFixed(2);
+    return '$' + Math.round(n).toLocaleString();
+  };
   const fmtUSDPrecise = (n) => '$' + n.toFixed(2);
   const fmtNum = (n) => Math.round(n).toLocaleString();
   const fmtCHZ = (n) => Math.round(n).toLocaleString() + ' CHZ';
@@ -655,20 +670,16 @@
     const flexUsers = s.wau * (s.flexRate / 100);
     const amUsers = s.wau * (s.amRate / 100);
 
-    // Activation: users * slots * price
     const activationCHZ = activatingUsers * s.avgSlots * s.priceActivation;
     const activationUSD = activationCHZ * s.chzPrice;
 
-    // Flexibility: avg 3 purchases/week per buyer at ticket price (blended ticket/scout)
     const flexPurchasesPerUser = 3;
     const flexCHZ = flexUsers * flexPurchasesPerUser * s.priceTicket;
     const flexUSD = flexCHZ * s.chzPrice;
 
-    // Assistant Manager
     const amCHZ = amUsers * s.priceAM;
     const amUSD = amCHZ * s.chzPrice;
 
-    // Tactic unlocks (steady state ~5% of WAU/week buy at avg 25 CHZ blended one-time/rental)
     const tacticUsers = s.wau * 0.05;
     const tacticCHZ = tacticUsers * 25;
     const tacticUSD = tacticCHZ * s.chzPrice;
@@ -683,7 +694,7 @@
       amUSD, amCHZ, amUsers,
       tacticUSD, tacticCHZ, tacticUsers,
       weeklyUSD, weeklyCHZ, annualUSD,
-      arpu: weeklyUSD / s.wau,
+      arpu: s.wau > 0 ? weeklyUSD / s.wau : 0,
       platformAnnual: annualUSD * 0.25,
       rewardPoolAnnual: annualUSD * 0.40,
       buybackAnnual: annualUSD * 0.15,
@@ -693,10 +704,10 @@
   }
 
   // ============ CHARTS ============
-  Chart.defaults.color = '#8b94aa';
+  Chart.defaults.color = '#5a5a52';
   Chart.defaults.font.family = "'JetBrains Mono', monospace";
   Chart.defaults.font.size = 11;
-  Chart.defaults.borderColor = '#2a324a';
+  Chart.defaults.borderColor = '#e5e3da';
 
   let mixChart, sensitivityChart, chzChart;
 
@@ -708,8 +719,8 @@
         labels: ['Activation', 'Flexibility', 'Assistant Mgr', 'Tactics'],
         datasets: [{
           data: [0, 0, 0, 0],
-          backgroundColor: ['#ff3366', '#ffb800', '#00d4aa', '#7b61ff'],
-          borderColor: '#161d2e',
+          backgroundColor: ['#d63862', '#c9881a', '#1f8a6e', '#5b4ad4'],
+          borderColor: '#ffffff',
           borderWidth: 2,
         }]
       },
@@ -720,15 +731,21 @@
         plugins: {
           legend: {
             position: 'bottom',
-            labels: { padding: 14, usePointStyle: true, pointStyle: 'rect', boxWidth: 8, boxHeight: 8 }
+            labels: { padding: 14, usePointStyle: true, pointStyle: 'rect', boxWidth: 8, boxHeight: 8, color: '#1a1a1a' }
           },
           tooltip: {
-            backgroundColor: '#0a0e1a',
-            borderColor: '#2a324a',
+            backgroundColor: '#1a1a1a',
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+            borderColor: '#1a1a1a',
             borderWidth: 1,
             padding: 12,
             callbacks: {
-              label: (ctx) => ctx.label + ': ' + fmtUSDFull(ctx.parsed) + ' (' + ((ctx.parsed / ctx.dataset.data.reduce((a,b)=>a+b,0)) * 100).toFixed(1) + '%)'
+              label: (ctx) => {
+                const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : '0.0';
+                return ctx.label + ': ' + fmtUSDFull(ctx.parsed) + ' (' + pct + '%)';
+              }
             }
           }
         }
@@ -743,22 +760,22 @@
         datasets: [{
           label: 'Annual Platform Revenue',
           data: [],
-          borderColor: '#00d4aa',
-          backgroundColor: 'rgba(0, 212, 170, 0.08)',
+          borderColor: '#1f8a6e',
+          backgroundColor: 'rgba(31, 138, 110, 0.1)',
           borderWidth: 2,
           fill: true,
           tension: 0.3,
-          pointBackgroundColor: '#00d4aa',
-          pointBorderColor: '#0a0e1a',
+          pointBackgroundColor: '#1f8a6e',
+          pointBorderColor: '#ffffff',
           pointRadius: 4,
           pointHoverRadius: 6,
         }, {
           label: 'Current WAU',
           data: [],
-          borderColor: '#ff3366',
+          borderColor: '#d63862',
           borderWidth: 0,
-          pointBackgroundColor: '#ff3366',
-          pointBorderColor: '#0a0e1a',
+          pointBackgroundColor: '#d63862',
+          pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
           pointRadius: 8,
           pointHoverRadius: 10,
@@ -771,8 +788,10 @@
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#0a0e1a',
-            borderColor: '#2a324a',
+            backgroundColor: '#1a1a1a',
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+            borderColor: '#1a1a1a',
             borderWidth: 1,
             padding: 12,
             callbacks: {
@@ -784,12 +803,18 @@
         scales: {
           x: {
             type: 'linear',
-            grid: { color: '#1d2538' },
-            ticks: { callback: (v) => v >= 1000 ? (v/1000) + 'K' : v }
+            grid: { color: '#f0eee5' },
+            ticks: {
+              color: '#8a8a80',
+              callback: (v) => v >= 1000 ? (v/1000) + 'K' : v
+            }
           },
           y: {
-            grid: { color: '#1d2538' },
-            ticks: { callback: (v) => fmtUSD(v) }
+            grid: { color: '#f0eee5' },
+            ticks: {
+              color: '#8a8a80',
+              callback: (v) => fmtUSD(v)
+            }
           }
         }
       }
@@ -806,10 +831,10 @@
           backgroundColor: (ctx) => {
             const idx = ctx.dataIndex;
             const labels = ctx.chart.data.labels;
-            if (!labels || idx === undefined) return '#ffb800';
+            if (!labels || idx === undefined) return '#c9881a';
             const cur = parseFloat(labels[idx]);
             const stateChz = parseFloat(state.chzPrice.toFixed(3));
-            return Math.abs(cur - stateChz) < 0.005 ? '#ff3366' : '#ffb800';
+            return Math.abs(cur - stateChz) < 0.005 ? '#d63862' : '#c9881a';
           },
           borderRadius: 2,
         }]
@@ -820,8 +845,10 @@
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#0a0e1a',
-            borderColor: '#2a324a',
+            backgroundColor: '#1a1a1a',
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+            borderColor: '#1a1a1a',
             borderWidth: 1,
             padding: 12,
             callbacks: {
@@ -831,8 +858,8 @@
           }
         },
         scales: {
-          x: { grid: { color: '#1d2538' } },
-          y: { grid: { color: '#1d2538' }, ticks: { callback: (v) => fmtUSD(v) } }
+          x: { grid: { color: '#f0eee5' }, ticks: { color: '#8a8a80' } },
+          y: { grid: { color: '#f0eee5' }, ticks: { color: '#8a8a80', callback: (v) => fmtUSD(v) } }
         }
       }
     });
@@ -887,11 +914,11 @@
 
   function renderAllocation(c) {
     const segments = [
-      { label: 'Reward Pool', pct: 40, value: c.rewardPoolAnnual, color: '#ff3366' },
-      { label: 'Platform', pct: 25, value: c.platformAnnual, color: '#00d4aa' },
-      { label: 'Buyback & Burn', pct: 15, value: c.buybackAnnual, color: '#ffb800' },
-      { label: 'Treasury', pct: 10, value: c.treasuryAnnual, color: '#7b61ff' },
-      { label: 'Acquisition', pct: 10, value: c.acquisitionAnnual, color: '#3b82f6' },
+      { label: 'Reward Pool', pct: 40, value: c.rewardPoolAnnual, color: '#d63862' },
+      { label: 'Platform', pct: 25, value: c.platformAnnual, color: '#1f8a6e' },
+      { label: 'Buyback & Burn', pct: 15, value: c.buybackAnnual, color: '#c9881a' },
+      { label: 'Treasury', pct: 10, value: c.treasuryAnnual, color: '#5b4ad4' },
+      { label: 'Acquisition', pct: 10, value: c.acquisitionAnnual, color: '#2563cc' },
     ];
 
     document.getElementById('allocation-bar').innerHTML = segments.map(s => `
@@ -920,18 +947,16 @@
   }
 
   function renderCharts(c) {
-    // Mix chart
     mixChart.data.datasets[0].data = [c.activationUSD, c.flexUSD, c.amUSD, c.tacticUSD];
     mixChart.update('none');
 
-    // Sensitivity chart
-    const wauPoints = [5000, 25000, 50000, 100000, 200000, 350000, 500000];
+    // Sensitivity points sized for early-stage range
+    const wauPoints = [100, 500, 1000, 2500, 5000, 15000, 50000, 100000];
     const sensData = wauPoints.map(w => ({ x: w, y: compute({ ...state, wau: w }).platformAnnual }));
     sensitivityChart.data.datasets[0].data = sensData;
     sensitivityChart.data.datasets[1].data = [{ x: state.wau, y: c.platformAnnual }];
     sensitivityChart.update('none');
 
-    // CHZ chart
     const chzPoints = [0.02, 0.05, 0.08, 0.10, 0.15, 0.20, 0.25];
     chzChart.data.labels = chzPoints.map(p => p.toFixed(3));
     chzChart.data.datasets[0].data = chzPoints.map(p => compute({ ...state, chzPrice: p }).annualUSD);
