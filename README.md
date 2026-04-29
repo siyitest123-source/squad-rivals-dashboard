@@ -51,54 +51,6 @@ Three preset scenarios are baked in:
 
 Reset to defaults any time via the button at the bottom of the input panel.
 
-## Pushing to GitHub
-
-```bash
-# 1. From this folder, init git
-git init
-git add .
-git commit -m "Initial commit: Squad Rivals revenue dashboard"
-
-# 2. Create a new repo on github.com (private if you want)
-#    Don't add a README on GitHub — we already have one here
-
-# 3. Connect and push (replace YOUR-USERNAME and REPO-NAME)
-git remote add origin https://github.com/YOUR-USERNAME/REPO-NAME.git
-git branch -M main
-git push -u origin main
-```
-
-## Sharing with teammates
-
-Three options, easiest to most polished:
-
-### Option 1 — Just send the file
-Email or Slack the `index.html` file. They open it. Done.
-
-### Option 2 — GitHub Pages (free hosted URL)
-After pushing to GitHub:
-1. Go to your repo → **Settings** → **Pages**
-2. Under **Source**, select **Deploy from a branch**
-3. Choose **main** branch and **/ (root)** folder
-4. Save. After ~1 minute you'll get a URL like `https://YOUR-USERNAME.github.io/REPO-NAME/`
-5. Share that URL with your team
-
-### Option 3 — Private repo + Pages
-Same as above, but if your repo is private you need GitHub Pro for Pages access. Or just keep the repo public — there's nothing sensitive in this dashboard.
-
-## Editing the model
-
-All inputs and assumptions live in the `<script>` block near the top of `index.html`:
-
-- **`defaults`** object — change baseline values
-- **`scenarios`** object — adjust the three preset scenarios
-- **`compute()`** function — change the revenue formulas themselves
-
-Common edits:
-
-- Want to add a new revenue stream? Add it inside `compute()`, then add a row in `renderBreakdown()` and a slice in the mix chart.
-- Want to change the allocation split? Edit the percentages in `compute()` (the `0.40`, `0.25`, etc. lines) and update `renderAllocation()`.
-- Want different sensitivity chart points? Edit `wauPoints` and `chzPoints` arrays in `renderCharts()`.
 
 ## Caveats
 
