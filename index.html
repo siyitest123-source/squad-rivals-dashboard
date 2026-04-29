@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Socios Squad Rivals — Revenue Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-2: #111827;
+    --surface: #161d2e;
+    --surface-2: #1d2538;
+    --border: #2a324a;
+    --accent: #ff3366;
+    --accent-2: #ffb800;
+    --accent-3: #00d4aa;
+    --text: #e8ecf5;
+    --text-dim: #8b94aa;
+    --text-faint: #5a6478;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-feature-settings: "ss01", "ss02";
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 0%, rgba(255, 51, 102, 0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(0, 212, 170, 0.06), transparent);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  h1 .em { color: var(--accent-2); font-style: italic; font-weight: 500; }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-top: 8px;
+    max-width: 520px;
+  }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  /* KPI strip */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .kpi {
+    background: var(--surface);
+    padding: 20px 22px;
+    transition: background 0.2s;
+  }
+  .kpi:hover { background: var(--surface-2); }
+  .kpi-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .kpi-value.accent { color: var(--accent-2); }
+  .kpi-value.success { color: var(--accent-3); }
+  .kpi-value.alert { color: var(--accent); }
+
+  /* Layout grid */
+  .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 1024px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* Panels */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  .panel h2 {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .panel h2::before {
+    content: '';
+    width: 18px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .panel + .panel { margin-top: 24px; }
+
+  /* Sliders */
+  .control {
+    margin-bottom: 22px;
+  }
+  .control:last-child { margin-bottom: 0; }
+  .control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .control-label {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .control-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent-2);
+    font-weight: 700;
+  }
+  .control-hint {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    height: 24px;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  input[type="range"]::-moz-range-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--accent-2);
+    border-radius: 50%;
+    margin-top: -6.5px;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent-2);
+    transition: transform 0.15s;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--accent-2);
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent-2);
+  }
+
+  /* Chart cards */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 768px) {
+    .chart-row { grid-template-columns: 1fr; }
+  }
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+  }
+  .chart-wrap.tall { height: 340px; }
+
+  /* Revenue breakdown table */
+  .breakdown {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .breakdown th {
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-weight: 500;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .breakdown td {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .breakdown tr:last-child td { border-bottom: none; }
+  .breakdown td.num {
+    font-family: 'JetBrains Mono', monospace;
+    text-align: right;
+    color: var(--accent-2);
+    font-weight: 600;
+  }
+  .breakdown td.label {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .breakdown td.detail {
+    color: var(--text-dim);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .total-row td {
+    padding-top: 18px !important;
+    border-top: 2px solid var(--border);
+    font-weight: 700 !important;
+    font-size: 15px;
+  }
+  .total-row td.num { color: var(--accent-3); font-size: 18px; }
+
+  /* Allocation bar */
+  .allocation {
+    display: flex;
+    height: 32px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 12px 0;
+  }
+  .allocation-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--bg);
+    transition: opacity 0.2s;
+    cursor: default;
+  }
+  .allocation-seg:hover { opacity: 0.85; }
+  .allocation-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .legend-text { line-height: 1.4; }
+  .legend-text-label { color: var(--text); font-weight: 500; }
+  .legend-text-value {
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  /* Section dividers in controls */
+  .control-section {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    margin: 28px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .control-section:first-child { margin-top: 0; }
+
+  /* Reset button */
+  .reset-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .reset-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Footer note */
+  .footnote {
+    margin-top: 32px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border-left: 2px solid var(--accent-2);
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .footnote strong { color: var(--text); }
+
+  /* Scenario tabs */
+  .scenarios {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--bg-2);
+    padding: 4px;
+    border-radius: 6px;
+  }
+  .scenario-btn {
+    flex: 1;
+    padding: 8px 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .scenario-btn.active {
+    background: var(--surface-2);
+    color: var(--accent-2);
+  }
+  .scenario-btn:hover:not(.active) { color: var(--text); }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <div class="brand">Socios Squad Rivals · Revenue Model v0.1</div>
+      <h1>Economy <span class="em">Sandbox</span></h1>
+      <p class="subtitle">Adjust pricing, conversion rates, and CHZ price. Watch the model recompute in real time. All figures in USD unless marked CHZ.</p>
+    </div>
+    <div class="tag">Internal · Not Final</div>
+  </header>
+
+  <!-- KPI Strip -->
+  <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-label">Weekly Gross Revenue</div>
+      <div class="kpi-value" id="kpi-weekly">$0</div>
+      <div class="kpi-sub" id="kpi-weekly-chz">0 CHZ</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Annual Gross Revenue</div>
+      <div class="kpi-value accent" id="kpi-annual">$0</div>
+      <div class="kpi-sub">52 weeks projected</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Platform Take (25%)</div>
+      <div class="kpi-value success" id="kpi-platform">$0</div>
+      <div class="kpi-sub">Annual sustainable income</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">ARPU / Week</div>
+      <div class="kpi-value" id="kpi-arpu">$0.00</div>
+      <div class="kpi-sub">Per active user</div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="layout">
+    <!-- Controls -->
+    <aside>
+      <div class="panel">
+        <h2>Inputs</h2>
+
+        <div class="scenarios">
+          <button class="scenario-btn active" data-scenario="base">Base</button>
+          <button class="scenario-btn" data-scenario="bear">Bear</button>
+          <button class="scenario-btn" data-scenario="bull">Bull</button>
+        </div>
+
+        <div class="control-section">Market</div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">Weekly Active Users</span>
+            <span class="control-value" id="val-wau">50,000</span>
+          </div>
+          <input type="range" id="wau" min="5000" max="500000" step="5000" value="50000">
+          <div class="control-hint">Steady state post-launch</div>
+        </div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">CHZ Price (USD)</span>
+            <span class="control-value" id="val-chz">$0.050</span>
+          </div>
+          <input type="range" id="chz-price" min="0.01" max="0.30" step="0.005" value="0.05">
+          <div class="control-hint">Drives all CHZ-denominated fees</div>
+        </div>
+
+        <div class="control-section">Conversion Rates</div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">Activate ≥1 Slot</span>
+            <span class="control-value" id="val-activation-rate">40%</span>
+          </div>
+          <input type="range" id="activation-rate" min="5" max="80" step="1" value="40">
+          <div class="control-hint">% of WAU who activate Fan Token slots</div>
+        </div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">Avg Slots Activated</span>
+            <span class="control-value" id="val-slots">3.0</span>
+          </div>
+          <input type="range" id="avg-slots" min="1" max="5" step="0.1" value="3.0">
+          <div class="control-hint">Per activating user</div>
+        </div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">Buy Tickets/Scouts</span>
+            <span class="control-value" id="val-flex-rate">15%</span>
+          </div>
+          <input type="range" id="flex-rate" min="2" max="50" step="1" value="15">
+          <div class="control-hint">% of WAU buying flex purchases</div>
+        </div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">Assistant Mgr Subs</span>
+            <span class="control-value" id="val-am-rate">3%</span>
+          </div>
+          <input type="range" id="am-rate" min="0" max="15" step="0.5" value="3">
+          <div class="control-hint">% of WAU subscribed to AM</div>
+        </div>
+
+        <div class="control-section">Pricing (CHZ)</div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">Slot Activation</span>
+            <span class="control-value" id="val-price-activation">20 CHZ</span>
+          </div>
+          <input type="range" id="price-activation" min="5" max="60" step="1" value="20">
+          <div class="control-hint">Per slot per matchday week</div>
+        </div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">Challenge Ticket</span>
+            <span class="control-value" id="val-price-ticket">10 CHZ</span>
+          </div>
+          <input type="range" id="price-ticket" min="2" max="30" step="1" value="10">
+          <div class="control-hint">Avg flex purchase price</div>
+        </div>
+
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">Assistant Manager</span>
+            <span class="control-value" id="val-price-am">80 CHZ</span>
+          </div>
+          <input type="range" id="price-am" min="20" max="200" step="5" value="80">
+          <div class="control-hint">Per week</div>
+        </div>
+
+        <button class="reset-btn" id="reset-btn">Reset to Defaults</button>
+      </div>
+    </aside>
+
+    <!-- Charts & Breakdown -->
+    <main>
+      <div class="charts-grid">
+        <div class="panel">
+          <h2>Revenue Breakdown · Weekly</h2>
+          <table class="breakdown">
+            <thead>
+              <tr>
+                <th>Stream</th>
+                <th>Users</th>
+                <th>Volume</th>
+                <th style="text-align:right;">Weekly USD</th>
+              </tr>
+            </thead>
+            <tbody id="breakdown-body"></tbody>
+          </table>
+        </div>
+
+        <div class="chart-row">
+          <div class="panel">
+            <h2>Revenue Mix</h2>
+            <div class="chart-wrap">
+              <canvas id="mix-chart"></canvas>
+            </div>
+          </div>
+          <div class="panel">
+            <h2>Annual Allocation (40/25/15/10/10)</h2>
+            <div class="allocation" id="allocation-bar"></div>
+            <div class="allocation-legend" id="allocation-legend"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>WAU Sensitivity · Annual Platform Revenue</h2>
+          <div class="chart-wrap tall">
+            <canvas id="sensitivity-chart"></canvas>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>CHZ Price Impact · Annual Gross Revenue</h2>
+          <div class="chart-wrap">
+            <canvas id="chz-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="footnote">
+        <strong>Methodology.</strong> Revenue is computed bottom-up from WAU, segment conversion rates, and CHZ-denominated fees converted at the configured CHZ price. Activation revenue assumes activating users pay for the configured number of slots each week. Flexibility revenue assumes ~3 purchases/week per buying user at the configured ticket price (a blended ticket/scout average). Assistant Manager assumes weekly subscription pricing. The 40/25/15/10/10 allocation splits gross revenue into Reward Pool / Platform / Buyback &amp; Burn / Treasury Reserve / Acquisition.
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  // ============ STATE ============
+  const defaults = {
+    wau: 50000,
+    chzPrice: 0.05,
+    activationRate: 40,
+    avgSlots: 3.0,
+    flexRate: 15,
+    amRate: 3,
+    priceActivation: 20,
+    priceTicket: 10,
+    priceAM: 80,
+  };
+
+  const scenarios = {
+    base: { ...defaults },
+    bear: { ...defaults, wau: 15000, chzPrice: 0.03, activationRate: 25, avgSlots: 2.0, flexRate: 8, amRate: 1.5 },
+    bull: { ...defaults, wau: 200000, chzPrice: 0.12, activationRate: 55, avgSlots: 3.8, flexRate: 22, amRate: 5 },
+  };
+
+  let state = { ...defaults };
+
+  // ============ HELPERS ============
+  const fmtUSD = (n) => {
+    if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+    if (n >= 1e3) return '$' + (n / 1e3).toFixed(1) + 'K';
+    return '$' + n.toFixed(0);
+  };
+  const fmtUSDFull = (n) => '$' + Math.round(n).toLocaleString();
+  const fmtUSDPrecise = (n) => '$' + n.toFixed(2);
+  const fmtNum = (n) => Math.round(n).toLocaleString();
+  const fmtCHZ = (n) => Math.round(n).toLocaleString() + ' CHZ';
+
+  // ============ MODEL ============
+  function compute(s) {
+    const activatingUsers = s.wau * (s.activationRate / 100);
+    const flexUsers = s.wau * (s.flexRate / 100);
+    const amUsers = s.wau * (s.amRate / 100);
+
+    // Activation: users * slots * price
+    const activationCHZ = activatingUsers * s.avgSlots * s.priceActivation;
+    const activationUSD = activationCHZ * s.chzPrice;
+
+    // Flexibility: avg 3 purchases/week per buyer at ticket price (blended ticket/scout)
+    const flexPurchasesPerUser = 3;
+    const flexCHZ = flexUsers * flexPurchasesPerUser * s.priceTicket;
+    const flexUSD = flexCHZ * s.chzPrice;
+
+    // Assistant Manager
+    const amCHZ = amUsers * s.priceAM;
+    const amUSD = amCHZ * s.chzPrice;
+
+    // Tactic unlocks (steady state ~5% of WAU/week buy at avg 25 CHZ blended one-time/rental)
+    const tacticUsers = s.wau * 0.05;
+    const tacticCHZ = tacticUsers * 25;
+    const tacticUSD = tacticCHZ * s.chzPrice;
+
+    const weeklyUSD = activationUSD + flexUSD + amUSD + tacticUSD;
+    const weeklyCHZ = activationCHZ + flexCHZ + amCHZ + tacticCHZ;
+    const annualUSD = weeklyUSD * 52;
+
+    return {
+      activationUSD, activationCHZ, activatingUsers,
+      flexUSD, flexCHZ, flexUsers, flexPurchases: flexUsers * flexPurchasesPerUser,
+      amUSD, amCHZ, amUsers,
+      tacticUSD, tacticCHZ, tacticUsers,
+      weeklyUSD, weeklyCHZ, annualUSD,
+      arpu: weeklyUSD / s.wau,
+      platformAnnual: annualUSD * 0.25,
+      rewardPoolAnnual: annualUSD * 0.40,
+      buybackAnnual: annualUSD * 0.15,
+      treasuryAnnual: annualUSD * 0.10,
+      acquisitionAnnual: annualUSD * 0.10,
+    };
+  }
+
+  // ============ CHARTS ============
+  Chart.defaults.color = '#8b94aa';
+  Chart.defaults.font.family = "'JetBrains Mono', monospace";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.borderColor = '#2a324a';
+
+  let mixChart, sensitivityChart, chzChart;
+
+  function initCharts() {
+    const mixCtx = document.getElementById('mix-chart').getContext('2d');
+    mixChart = new Chart(mixCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Activation', 'Flexibility', 'Assistant Mgr', 'Tactics'],
+        datasets: [{
+          data: [0, 0, 0, 0],
+          backgroundColor: ['#ff3366', '#ffb800', '#00d4aa', '#7b61ff'],
+          borderColor: '#161d2e',
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { padding: 14, usePointStyle: true, pointStyle: 'rect', boxWidth: 8, boxHeight: 8 }
+          },
+          tooltip: {
+            backgroundColor: '#0a0e1a',
+            borderColor: '#2a324a',
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              label: (ctx) => ctx.label + ': ' + fmtUSDFull(ctx.parsed) + ' (' + ((ctx.parsed / ctx.dataset.data.reduce((a,b)=>a+b,0)) * 100).toFixed(1) + '%)'
+            }
+          }
+        }
+      }
+    });
+
+    const sensCtx = document.getElementById('sensitivity-chart').getContext('2d');
+    sensitivityChart = new Chart(sensCtx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Annual Platform Revenue',
+          data: [],
+          borderColor: '#00d4aa',
+          backgroundColor: 'rgba(0, 212, 170, 0.08)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: '#00d4aa',
+          pointBorderColor: '#0a0e1a',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        }, {
+          label: 'Current WAU',
+          data: [],
+          borderColor: '#ff3366',
+          borderWidth: 0,
+          pointBackgroundColor: '#ff3366',
+          pointBorderColor: '#0a0e1a',
+          pointBorderWidth: 2,
+          pointRadius: 8,
+          pointHoverRadius: 10,
+          showLine: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0a0e1a',
+            borderColor: '#2a324a',
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              title: (items) => fmtNum(items[0].parsed.x) + ' WAU',
+              label: (ctx) => 'Platform: ' + fmtUSDFull(ctx.parsed.y)
+            }
+          }
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            grid: { color: '#1d2538' },
+            ticks: { callback: (v) => v >= 1000 ? (v/1000) + 'K' : v }
+          },
+          y: {
+            grid: { color: '#1d2538' },
+            ticks: { callback: (v) => fmtUSD(v) }
+          }
+        }
+      }
+    });
+
+    const chzCtx = document.getElementById('chz-chart').getContext('2d');
+    chzChart = new Chart(chzCtx, {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Annual Gross Revenue',
+          data: [],
+          backgroundColor: (ctx) => {
+            const idx = ctx.dataIndex;
+            const labels = ctx.chart.data.labels;
+            if (!labels || idx === undefined) return '#ffb800';
+            const cur = parseFloat(labels[idx]);
+            const stateChz = parseFloat(state.chzPrice.toFixed(3));
+            return Math.abs(cur - stateChz) < 0.005 ? '#ff3366' : '#ffb800';
+          },
+          borderRadius: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0a0e1a',
+            borderColor: '#2a324a',
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              title: (items) => 'CHZ @ $' + items[0].label,
+              label: (ctx) => fmtUSDFull(ctx.parsed.y)
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: '#1d2538' } },
+          y: { grid: { color: '#1d2538' }, ticks: { callback: (v) => fmtUSD(v) } }
+        }
+      }
+    });
+  }
+
+  // ============ RENDER ============
+  function renderBreakdown(c) {
+    const body = document.getElementById('breakdown-body');
+    const rows = [
+      {
+        label: 'Slot Activations',
+        users: fmtNum(c.activatingUsers),
+        volume: fmtNum(c.activatingUsers * state.avgSlots) + ' slots',
+        amount: c.activationUSD,
+      },
+      {
+        label: 'Tickets & Scouts',
+        users: fmtNum(c.flexUsers),
+        volume: fmtNum(c.flexPurchases) + ' txns',
+        amount: c.flexUSD,
+      },
+      {
+        label: 'Assistant Manager',
+        users: fmtNum(c.amUsers),
+        volume: fmtNum(c.amUsers) + ' subs',
+        amount: c.amUSD,
+      },
+      {
+        label: 'Tactic Unlocks',
+        users: fmtNum(c.tacticUsers),
+        volume: fmtNum(c.tacticUsers) + ' txns',
+        amount: c.tacticUSD,
+      },
+    ];
+
+    body.innerHTML = rows.map(r => `
+      <tr>
+        <td class="label">${r.label}</td>
+        <td class="detail">${r.users}</td>
+        <td class="detail">${r.volume}</td>
+        <td class="num">${fmtUSDFull(r.amount)}</td>
+      </tr>
+    `).join('') + `
+      <tr class="total-row">
+        <td>Weekly Total</td>
+        <td></td>
+        <td class="detail">${fmtCHZ(c.weeklyCHZ)}</td>
+        <td class="num">${fmtUSDFull(c.weeklyUSD)}</td>
+      </tr>
+    `;
+  }
+
+  function renderAllocation(c) {
+    const segments = [
+      { label: 'Reward Pool', pct: 40, value: c.rewardPoolAnnual, color: '#ff3366' },
+      { label: 'Platform', pct: 25, value: c.platformAnnual, color: '#00d4aa' },
+      { label: 'Buyback & Burn', pct: 15, value: c.buybackAnnual, color: '#ffb800' },
+      { label: 'Treasury', pct: 10, value: c.treasuryAnnual, color: '#7b61ff' },
+      { label: 'Acquisition', pct: 10, value: c.acquisitionAnnual, color: '#3b82f6' },
+    ];
+
+    document.getElementById('allocation-bar').innerHTML = segments.map(s => `
+      <div class="allocation-seg" style="width:${s.pct}%; background:${s.color};" title="${s.label}: ${fmtUSDFull(s.value)}">
+        ${s.pct}%
+      </div>
+    `).join('');
+
+    document.getElementById('allocation-legend').innerHTML = segments.map(s => `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${s.color};"></div>
+        <div class="legend-text">
+          <div class="legend-text-label">${s.label}</div>
+          <div class="legend-text-value">${fmtUSDFull(s.value)}/yr</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderKPIs(c) {
+    document.getElementById('kpi-weekly').textContent = fmtUSDFull(c.weeklyUSD);
+    document.getElementById('kpi-weekly-chz').textContent = fmtCHZ(c.weeklyCHZ);
+    document.getElementById('kpi-annual').textContent = fmtUSDFull(c.annualUSD);
+    document.getElementById('kpi-platform').textContent = fmtUSDFull(c.platformAnnual);
+    document.getElementById('kpi-arpu').textContent = fmtUSDPrecise(c.arpu);
+  }
+
+  function renderCharts(c) {
+    // Mix chart
+    mixChart.data.datasets[0].data = [c.activationUSD, c.flexUSD, c.amUSD, c.tacticUSD];
+    mixChart.update('none');
+
+    // Sensitivity chart
+    const wauPoints = [5000, 25000, 50000, 100000, 200000, 350000, 500000];
+    const sensData = wauPoints.map(w => ({ x: w, y: compute({ ...state, wau: w }).platformAnnual }));
+    sensitivityChart.data.datasets[0].data = sensData;
+    sensitivityChart.data.datasets[1].data = [{ x: state.wau, y: c.platformAnnual }];
+    sensitivityChart.update('none');
+
+    // CHZ chart
+    const chzPoints = [0.02, 0.05, 0.08, 0.10, 0.15, 0.20, 0.25];
+    chzChart.data.labels = chzPoints.map(p => p.toFixed(3));
+    chzChart.data.datasets[0].data = chzPoints.map(p => compute({ ...state, chzPrice: p }).annualUSD);
+    chzChart.update('none');
+  }
+
+  function render() {
+    const c = compute(state);
+    renderKPIs(c);
+    renderBreakdown(c);
+    renderAllocation(c);
+    renderCharts(c);
+  }
+
+  // ============ BINDINGS ============
+  function updateInputDisplay() {
+    document.getElementById('val-wau').textContent = fmtNum(state.wau);
+    document.getElementById('val-chz').textContent = '$' + state.chzPrice.toFixed(3);
+    document.getElementById('val-activation-rate').textContent = state.activationRate + '%';
+    document.getElementById('val-slots').textContent = state.avgSlots.toFixed(1);
+    document.getElementById('val-flex-rate').textContent = state.flexRate + '%';
+    document.getElementById('val-am-rate').textContent = state.amRate + '%';
+    document.getElementById('val-price-activation').textContent = state.priceActivation + ' CHZ';
+    document.getElementById('val-price-ticket').textContent = state.priceTicket + ' CHZ';
+    document.getElementById('val-price-am').textContent = state.priceAM + ' CHZ';
+  }
+
+  function syncSliders() {
+    document.getElementById('wau').value = state.wau;
+    document.getElementById('chz-price').value = state.chzPrice;
+    document.getElementById('activation-rate').value = state.activationRate;
+    document.getElementById('avg-slots').value = state.avgSlots;
+    document.getElementById('flex-rate').value = state.flexRate;
+    document.getElementById('am-rate').value = state.amRate;
+    document.getElementById('price-activation').value = state.priceActivation;
+    document.getElementById('price-ticket').value = state.priceTicket;
+    document.getElementById('price-am').value = state.priceAM;
+  }
+
+  function bindSlider(id, key, parser = parseFloat) {
+    document.getElementById(id).addEventListener('input', (e) => {
+      state[key] = parser(e.target.value);
+      updateInputDisplay();
+      render();
+    });
+  }
+
+  function init() {
+    initCharts();
+    bindSlider('wau', 'wau', (v) => parseInt(v));
+    bindSlider('chz-price', 'chzPrice');
+    bindSlider('activation-rate', 'activationRate', (v) => parseInt(v));
+    bindSlider('avg-slots', 'avgSlots');
+    bindSlider('flex-rate', 'flexRate', (v) => parseInt(v));
+    bindSlider('am-rate', 'amRate');
+    bindSlider('price-activation', 'priceActivation', (v) => parseInt(v));
+    bindSlider('price-ticket', 'priceTicket', (v) => parseInt(v));
+    bindSlider('price-am', 'priceAM', (v) => parseInt(v));
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      state = { ...defaults };
+      syncSliders();
+      updateInputDisplay();
+      render();
+      document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-scenario="base"]').classList.add('active');
+    });
+
+    document.querySelectorAll('.scenario-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state = { ...scenarios[btn.dataset.scenario] };
+        syncSliders();
+        updateInputDisplay();
+        render();
+      });
+    });
+
+    updateInputDisplay();
+    render();
+  }
+
+  init();
+</script>
+</body>
+</html>
