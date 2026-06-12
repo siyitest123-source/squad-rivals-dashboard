@@ -355,14 +355,20 @@
 
   /* Section dividers in controls */
   .control-section {
-    font-size: 10px;
-    letter-spacing: 0.18em;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--text-faint);
-    font-family: 'JetBrains Mono', monospace;
-    margin: 28px 0 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px dashed var(--border-strong);
+    color: var(--text);
+    margin: 32px -24px 18px;
+    padding: 10px 24px;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .control-section:first-child { margin-top: 0; }
 
@@ -385,6 +391,55 @@
   .reset-btn:hover {
     border-color: var(--accent);
     color: var(--accent);
+    background: var(--surface-2);
+  }
+
+  /* Editable streams */
+  .stream-head { justify-content: space-between; }
+  .stream-name {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px dashed transparent;
+    font: inherit;
+    color: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0;
+  }
+  .stream-name:hover { border-bottom-color: var(--border-strong); }
+  .stream-name:focus { outline: none; border-bottom-color: var(--accent); }
+  .stream-del {
+    background: transparent;
+    border: none;
+    color: var(--text-faint);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .stream-del:hover { color: #ffffff; background: var(--accent); }
+  .add-stream-btn {
+    width: 100%;
+    margin-top: 28px;
+    padding: 10px;
+    background: transparent;
+    border: 1px dashed var(--border-strong);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .add-stream-btn:hover {
+    border-color: var(--accent-3);
+    color: var(--accent-3);
     background: var(--surface-2);
   }
 
@@ -443,7 +498,10 @@
       <h1>Economy <span class="em">Sandbox</span></h1>
       <p class="subtitle">Adjust pricing, conversion rates, and CHZ price. Watch the model recompute in real time. All figures in USD unless marked CHZ.</p>
     </div>
-    <div class="tag">Internal · Not Final</div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <div class="tag" id="sync-status">Local Only</div>
+      <div class="tag">Internal · Not Final</div>
+    </div>
   </header>
 
   <!-- KPI Strip -->
@@ -503,73 +561,9 @@
           <div class="control-hint">Drives all CHZ-denominated fees</div>
         </div>
 
-        <div class="control-section">Conversion Rates</div>
+        <div id="streams-container"></div>
 
-        <div class="control">
-          <div class="control-header">
-            <span class="control-label">Activate ≥1 Slot</span>
-            <span class="control-value" id="val-activation-rate">30%</span>
-          </div>
-          <input type="range" id="activation-rate" min="5" max="80" step="1" value="30">
-          <div class="control-hint">% of WAU who activate Fan Token slots</div>
-        </div>
-
-        <div class="control">
-          <div class="control-header">
-            <span class="control-label">Avg Slots Activated</span>
-            <span class="control-value" id="val-slots">2.5</span>
-          </div>
-          <input type="range" id="avg-slots" min="1" max="5" step="0.1" value="2.5">
-          <div class="control-hint">Per activating user</div>
-        </div>
-
-        <div class="control">
-          <div class="control-header">
-            <span class="control-label">Buy Tickets/Scouts</span>
-            <span class="control-value" id="val-flex-rate">10%</span>
-          </div>
-          <input type="range" id="flex-rate" min="2" max="50" step="1" value="10">
-          <div class="control-hint">% of WAU buying flex purchases</div>
-        </div>
-
-        <div class="control">
-          <div class="control-header">
-            <span class="control-label">Assistant Mgr Subs</span>
-            <span class="control-value" id="val-am-rate">2%</span>
-          </div>
-          <input type="range" id="am-rate" min="0" max="15" step="0.5" value="2">
-          <div class="control-hint">% of WAU subscribed to AM</div>
-        </div>
-
-        <div class="control-section">Pricing (CHZ)</div>
-
-        <div class="control">
-          <div class="control-header">
-            <span class="control-label">Slot Activation</span>
-            <span class="control-value" id="val-price-activation">20 CHZ</span>
-          </div>
-          <input type="range" id="price-activation" min="5" max="60" step="1" value="20">
-          <div class="control-hint">Per slot per matchday week</div>
-        </div>
-
-        <div class="control">
-          <div class="control-header">
-            <span class="control-label">Challenge Ticket</span>
-            <span class="control-value" id="val-price-ticket">10 CHZ</span>
-          </div>
-          <input type="range" id="price-ticket" min="2" max="30" step="1" value="10">
-          <div class="control-hint">Avg flex purchase price</div>
-        </div>
-
-        <div class="control">
-          <div class="control-header">
-            <span class="control-label">Assistant Manager</span>
-            <span class="control-value" id="val-price-am">80 CHZ</span>
-          </div>
-          <input type="range" id="price-am" min="20" max="200" step="5" value="80">
-          <div class="control-hint">Per week</div>
-        </div>
-
+        <button class="add-stream-btn" id="add-stream-btn">+ Add Revenue Stream</button>
         <button class="reset-btn" id="reset-btn">Reset to Defaults</button>
       </div>
     </aside>
@@ -622,7 +616,7 @@
       </div>
 
       <div class="footnote">
-        <strong>Methodology.</strong> Revenue is computed bottom-up from WAU, segment conversion rates, and CHZ-denominated fees converted at the configured CHZ price. Activation revenue assumes activating users pay for the configured number of slots each week. Flexibility revenue assumes ~3 purchases/week per buying user at the configured ticket price (a blended ticket/scout average). Assistant Manager assumes weekly subscription pricing. The 40/25/15/10/10 allocation splits gross revenue into Reward Pool / Platform / Buyback &amp; Burn / Treasury Reserve / Acquisition.
+        <strong>Methodology.</strong> Every revenue stream follows the same formula: <strong>weekly revenue = WAU × adoption rate × txns/week × unit price × platform take % × CHZ price</strong>. Streams are fully editable — rename them, adjust their levers, delete them, or add new ones. For Wager Commission, head-to-head challenge mechanics fold into the template: txns/week = wagers initiated × accept rate (matched within the time window), unit price = total matched pot (2× stake), and platform take = the commission cut. Scenario buttons (Bear/Base/Bull) set market conditions (WAU, CHZ price) while preserving your stream setup. The 40/25/15/10/10 allocation splits gross revenue into Reward Pool / Platform / Buyback &amp; Burn / Treasury Reserve / Acquisition.
       </div>
     </main>
   </div>
@@ -630,25 +624,99 @@
 
 <script>
   // ============ STATE ============
-  const defaults = {
-    wau: 1000,
-    chzPrice: 0.05,
-    activationRate: 30,
-    avgSlots: 2.5,
-    flexRate: 10,
-    amRate: 2,
-    priceActivation: 20,
-    priceTicket: 10,
-    priceAM: 80,
-  };
+  const PALETTE = ['#d63862', '#c9881a', '#1f8a6e', '#5b4ad4', '#2563cc', '#b04fc9', '#0f766e', '#9a3412'];
+  let streamSeq = 0;
+  const mkStream = (name, rate, freq, price, take) => ({ id: ++streamSeq, name, rate, freq, price, take });
 
+  // Each stream: rate = % of WAU, freq = txns/user/week, price = CHZ per txn, take = % platform keeps
+  const defaultStreams = () => [
+    mkStream('New Formation Unlock', 30, 2.5, 20, 100),
+    mkStream('Tickets & Scouts', 10, 3, 10, 100),
+    mkStream('Assistant Manager', 2, 1, 80, 100),
+    mkStream('Wager Commission', 5, 1.4, 50, 20), // 1.4 = 2 wagers/wk × 70% accept; 50 CHZ = matched pot (2 × 25 stake)
+  ];
+
+  const defaults = { wau: 1000, chzPrice: 0.05 };
   const scenarios = {
-    bear: { ...defaults, wau: 200, chzPrice: 0.03, activationRate: 20, avgSlots: 1.8, flexRate: 6, amRate: 1 },
-    base: { ...defaults },
-    bull: { ...defaults, wau: 5000, chzPrice: 0.08, activationRate: 40, avgSlots: 3.2, flexRate: 15, amRate: 3.5 },
+    bear: { wau: 200, chzPrice: 0.03 },
+    base: { wau: 1000, chzPrice: 0.05 },
+    bull: { wau: 5000, chzPrice: 0.08 },
   };
 
-  let state = { ...defaults };
+  let state = { ...defaults, streams: defaultStreams() };
+
+  // ============ PERSISTENCE ============
+  // Two layers: shared database via /api/state (when deployed on Vercel + Neon),
+  // with browser localStorage as offline/local fallback.
+  const STORAGE_KEY = 'squad-rivals-revenue-model-v1';
+  const API_URL = '/api/state';
+  let remoteAvailable = false;
+  let saveTimer = null;
+
+  function setSyncStatus(mode) {
+    const el = document.getElementById('sync-status');
+    if (!el) return;
+    const map = {
+      synced: ['Shared · Synced', 'var(--accent-3)'],
+      saving: ['Shared · Saving…', 'var(--accent-2)'],
+      local: ['Local Only', 'var(--text-faint)'],
+      offline: ['Offline · Saved Locally', 'var(--accent)'],
+    };
+    const [text, color] = map[mode] || map.local;
+    el.textContent = text;
+    el.style.color = color;
+  }
+
+  function adoptState(saved) {
+    if (saved && Array.isArray(saved.streams) && saved.streams.length && typeof saved.wau === 'number') {
+      state = saved;
+      streamSeq = Math.max(...saved.streams.map(s => s.id), 0);
+      return true;
+    }
+    return false;
+  }
+
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable */ }
+    if (!remoteAvailable) return;
+    setSyncStatus('saving');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      try {
+        const r = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(state),
+        });
+        setSyncStatus(r.ok ? 'synced' : 'offline');
+      } catch (e) {
+        setSyncStatus('offline');
+      }
+    }, 800);
+  }
+
+  function loadLocalState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) adoptState(JSON.parse(raw));
+    } catch (e) { /* corrupt or unavailable — keep defaults */ }
+  }
+
+  async function loadRemoteState() {
+    try {
+      const r = await fetch(API_URL);
+      if (!r.ok) throw new Error('api unavailable');
+      const j = await r.json();
+      remoteAvailable = true;
+      adoptState(j.data); // null data (fresh DB) keeps defaults
+      setSyncStatus('synced');
+      return true;
+    } catch (e) {
+      remoteAvailable = false;
+      setSyncStatus('local');
+      return false;
+    }
+  }
 
   // ============ HELPERS ============
   const fmtUSD = (n) => {
@@ -666,33 +734,20 @@
 
   // ============ MODEL ============
   function compute(s) {
-    const activatingUsers = s.wau * (s.activationRate / 100);
-    const flexUsers = s.wau * (s.flexRate / 100);
-    const amUsers = s.wau * (s.amRate / 100);
+    const items = s.streams.map(st => {
+      const users = s.wau * (st.rate / 100);
+      const txns = users * st.freq;
+      const chz = txns * st.price * (st.take / 100);
+      const usd = chz * s.chzPrice;
+      return { ...st, users, txns, chz, usd };
+    });
 
-    const activationCHZ = activatingUsers * s.avgSlots * s.priceActivation;
-    const activationUSD = activationCHZ * s.chzPrice;
-
-    const flexPurchasesPerUser = 3;
-    const flexCHZ = flexUsers * flexPurchasesPerUser * s.priceTicket;
-    const flexUSD = flexCHZ * s.chzPrice;
-
-    const amCHZ = amUsers * s.priceAM;
-    const amUSD = amCHZ * s.chzPrice;
-
-    const tacticUsers = s.wau * 0.05;
-    const tacticCHZ = tacticUsers * 25;
-    const tacticUSD = tacticCHZ * s.chzPrice;
-
-    const weeklyUSD = activationUSD + flexUSD + amUSD + tacticUSD;
-    const weeklyCHZ = activationCHZ + flexCHZ + amCHZ + tacticCHZ;
+    const weeklyUSD = items.reduce((a, b) => a + b.usd, 0);
+    const weeklyCHZ = items.reduce((a, b) => a + b.chz, 0);
     const annualUSD = weeklyUSD * 52;
 
     return {
-      activationUSD, activationCHZ, activatingUsers,
-      flexUSD, flexCHZ, flexUsers, flexPurchases: flexUsers * flexPurchasesPerUser,
-      amUSD, amCHZ, amUsers,
-      tacticUSD, tacticCHZ, tacticUsers,
+      items,
       weeklyUSD, weeklyCHZ, annualUSD,
       arpu: s.wau > 0 ? weeklyUSD / s.wau : 0,
       platformAnnual: annualUSD * 0.25,
@@ -716,10 +771,10 @@
     mixChart = new Chart(mixCtx, {
       type: 'doughnut',
       data: {
-        labels: ['Activation', 'Flexibility', 'Assistant Mgr', 'Tactics'],
+        labels: [],
         datasets: [{
-          data: [0, 0, 0, 0],
-          backgroundColor: ['#d63862', '#c9881a', '#1f8a6e', '#5b4ad4'],
+          data: [],
+          backgroundColor: [],
           borderColor: '#ffffff',
           borderWidth: 2,
         }]
@@ -868,32 +923,12 @@
   // ============ RENDER ============
   function renderBreakdown(c) {
     const body = document.getElementById('breakdown-body');
-    const rows = [
-      {
-        label: 'Slot Activations',
-        users: fmtNum(c.activatingUsers),
-        volume: fmtNum(c.activatingUsers * state.avgSlots) + ' slots',
-        amount: c.activationUSD,
-      },
-      {
-        label: 'Tickets & Scouts',
-        users: fmtNum(c.flexUsers),
-        volume: fmtNum(c.flexPurchases) + ' txns',
-        amount: c.flexUSD,
-      },
-      {
-        label: 'Assistant Manager',
-        users: fmtNum(c.amUsers),
-        volume: fmtNum(c.amUsers) + ' subs',
-        amount: c.amUSD,
-      },
-      {
-        label: 'Tactic Unlocks',
-        users: fmtNum(c.tacticUsers),
-        volume: fmtNum(c.tacticUsers) + ' txns',
-        amount: c.tacticUSD,
-      },
-    ];
+    const rows = c.items.map(i => ({
+      label: i.name,
+      users: fmtNum(i.users),
+      volume: fmtNum(i.txns) + ' txns',
+      amount: i.usd,
+    }));
 
     body.innerHTML = rows.map(r => `
       <tr>
@@ -947,7 +982,9 @@
   }
 
   function renderCharts(c) {
-    mixChart.data.datasets[0].data = [c.activationUSD, c.flexUSD, c.amUSD, c.tacticUSD];
+    mixChart.data.labels = c.items.map(i => i.name);
+    mixChart.data.datasets[0].data = c.items.map(i => i.usd);
+    mixChart.data.datasets[0].backgroundColor = c.items.map((i, idx) => PALETTE[idx % PALETTE.length]);
     mixChart.update('none');
 
     // Sensitivity points sized for early-stage range
@@ -969,31 +1006,48 @@
     renderBreakdown(c);
     renderAllocation(c);
     renderCharts(c);
+    saveState();
+  }
+
+  // ============ STREAM EDITOR ============
+  const STREAM_FIELDS = [
+    { key: 'rate', label: 'Adoption Rate', min: 0, max: 100, step: 0.5, fmt: v => v + '%', hint: '% of WAU using this stream' },
+    { key: 'freq', label: 'Txns / User / Week', min: 0, max: 10, step: 0.1, fmt: v => v.toFixed(1), hint: 'Transactions per adopting user per week' },
+    { key: 'price', label: 'Unit Price', min: 1, max: 500, step: 1, fmt: v => v + ' CHZ', hint: 'CHZ value per transaction' },
+    { key: 'take', label: 'Platform Take', min: 1, max: 100, step: 1, fmt: v => v + '%', hint: '% of transaction value kept as revenue' },
+  ];
+
+  const escapeHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  function renderStreams() {
+    const wrap = document.getElementById('streams-container');
+    wrap.innerHTML = state.streams.map((st, idx) => `
+      <div class="control-section stream-head" style="border-left-color:${PALETTE[idx % PALETTE.length]}">
+        <input class="stream-name" data-id="${st.id}" value="${escapeHtml(st.name)}" title="Click to rename">
+        <button class="stream-del" data-id="${st.id}" title="Delete stream">✕</button>
+      </div>
+      ${STREAM_FIELDS.map(f => `
+        <div class="control">
+          <div class="control-header">
+            <span class="control-label">${f.label}</span>
+            <span class="control-value" id="sv-${st.id}-${f.key}">${f.fmt(st[f.key])}</span>
+          </div>
+          <input type="range" data-id="${st.id}" data-key="${f.key}" min="${f.min}" max="${f.max}" step="${f.step}" value="${st[f.key]}">
+          <div class="control-hint">${f.hint}</div>
+        </div>
+      `).join('')}
+    `).join('');
   }
 
   // ============ BINDINGS ============
   function updateInputDisplay() {
     document.getElementById('val-wau').textContent = fmtNum(state.wau);
     document.getElementById('val-chz').textContent = '$' + state.chzPrice.toFixed(3);
-    document.getElementById('val-activation-rate').textContent = state.activationRate + '%';
-    document.getElementById('val-slots').textContent = state.avgSlots.toFixed(1);
-    document.getElementById('val-flex-rate').textContent = state.flexRate + '%';
-    document.getElementById('val-am-rate').textContent = state.amRate + '%';
-    document.getElementById('val-price-activation').textContent = state.priceActivation + ' CHZ';
-    document.getElementById('val-price-ticket').textContent = state.priceTicket + ' CHZ';
-    document.getElementById('val-price-am').textContent = state.priceAM + ' CHZ';
   }
 
   function syncSliders() {
     document.getElementById('wau').value = state.wau;
     document.getElementById('chz-price').value = state.chzPrice;
-    document.getElementById('activation-rate').value = state.activationRate;
-    document.getElementById('avg-slots').value = state.avgSlots;
-    document.getElementById('flex-rate').value = state.flexRate;
-    document.getElementById('am-rate').value = state.amRate;
-    document.getElementById('price-activation').value = state.priceActivation;
-    document.getElementById('price-ticket').value = state.priceTicket;
-    document.getElementById('price-am').value = state.priceAM;
   }
 
   function bindSlider(id, key, parser = parseFloat) {
@@ -1004,22 +1058,58 @@
     });
   }
 
-  function init() {
+  async function init() {
+    const remote = await loadRemoteState();
+    if (!remote) loadLocalState();
     initCharts();
     bindSlider('wau', 'wau', (v) => parseInt(v));
     bindSlider('chz-price', 'chzPrice');
-    bindSlider('activation-rate', 'activationRate', (v) => parseInt(v));
-    bindSlider('avg-slots', 'avgSlots');
-    bindSlider('flex-rate', 'flexRate', (v) => parseInt(v));
-    bindSlider('am-rate', 'amRate');
-    bindSlider('price-activation', 'priceActivation', (v) => parseInt(v));
-    bindSlider('price-ticket', 'priceTicket', (v) => parseInt(v));
-    bindSlider('price-am', 'priceAM', (v) => parseInt(v));
+
+    const container = document.getElementById('streams-container');
+
+    container.addEventListener('input', (e) => {
+      const id = parseInt(e.target.dataset.id);
+      const st = state.streams.find(s => s.id === id);
+      if (!st) return;
+      if (e.target.type === 'range') {
+        const key = e.target.dataset.key;
+        st[key] = parseFloat(e.target.value);
+        const field = STREAM_FIELDS.find(f => f.key === key);
+        document.getElementById('sv-' + id + '-' + key).textContent = field.fmt(st[key]);
+        render();
+      } else if (e.target.classList.contains('stream-name')) {
+        st.name = e.target.value || 'Untitled Stream';
+        render();
+      }
+    });
+
+    container.addEventListener('click', (e) => {
+      const btn = e.target.closest('.stream-del');
+      if (!btn) return;
+      const id = parseInt(btn.dataset.id);
+      const st = state.streams.find(s => s.id === id);
+      if (!confirm('Are you sure you want to delete "' + (st ? st.name : 'this stream') + '"? This cannot be undone.')) return;
+      state.streams = state.streams.filter(s => s.id !== id);
+      renderStreams();
+      render();
+    });
+
+    document.getElementById('add-stream-btn').addEventListener('click', () => {
+      state.streams.push(mkStream('New Stream', 5, 1, 10, 100));
+      renderStreams();
+      render();
+      const inputs = document.querySelectorAll('.stream-name');
+      const last = inputs[inputs.length - 1];
+      if (last) { last.focus(); last.select(); }
+    });
 
     document.getElementById('reset-btn').addEventListener('click', () => {
-      state = { ...defaults };
+      if (!confirm('Reset everything to defaults? Your custom streams and settings will be lost.')) return;
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      state = { ...defaults, streams: defaultStreams() };
       syncSliders();
       updateInputDisplay();
+      renderStreams();
       render();
       document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
       document.querySelector('[data-scenario="base"]').classList.add('active');
@@ -1029,13 +1119,16 @@
       btn.addEventListener('click', () => {
         document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        state = { ...scenarios[btn.dataset.scenario] };
+        const sc = scenarios[btn.dataset.scenario];
+        state.wau = sc.wau;
+        state.chzPrice = sc.chzPrice;
         syncSliders();
         updateInputDisplay();
         render();
       });
     });
 
+    renderStreams();
     updateInputDisplay();
     render();
   }

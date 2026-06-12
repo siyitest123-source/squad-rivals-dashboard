@@ -1,0 +1,9 @@
+{
+  "name": "squad-rivals-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Socios Squad Rivals revenue model dashboard with shared persistence",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  }
+}
